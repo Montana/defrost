@@ -21,7 +21,8 @@ def test_pip_freeze__bool(freeze, expected):
     ("-f /opt/pip/wheels\n-e git+git@github.com:SurveyMonkey/defrost.git\nfoo==1.2.3\n## !! Could not determine repository location\nbar==2.0", [Package("foo==1.2.3"), Package("bar==2.0")]),
     ("## FIXME: could not find svn URL in dependency_links for this package:\ndeveloperweb===3-update-etcdev-r0", [Package("developerweb===3-update-etcdev-r0")]),
     ("-i https://pypi.python.org/simple\nfoo==1.2.3", [Package("foo==1.2.3")]),  # test -i
-    ("foo==1.2.3\n\nbar==2.0\n\n", [Package("foo==1.2.3"), Package("bar==2.0")]),
+    ("foo==1.2.3\n\nbar==2.0\n\n", [Package("foo==1.2.3"), Package("bar==2.0")]),  # test blank lines
+    (b"foo==1.2.3\nbar==2.0", [Package("foo==1.2.3"), Package("bar==2.0")]),  # test pip freeze as bytes
 ])
 def test_pip_freeze__iter(freeze, expected):
     from defrost import PipFreeze
