@@ -1,3 +1,9 @@
+0.3.2
+=====
+
+* gracefully handle blank lines and lines starting with dash
+  (https://github.com/SurveyMonkey/defrost/pull/14)
+
 0.3.1
 =====
 
