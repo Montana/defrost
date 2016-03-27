@@ -1,5 +1,5 @@
-Unreleased
-==========
+0.4.0
+=====
 
 * implement ``PipFreeze.__getitem__`` and ``PipFreeze.get()``.
 
