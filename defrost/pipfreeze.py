@@ -17,6 +17,16 @@ def _parse_pip_freeze(pip_freeze_output):
         yield Package(req)
 
 
+def _to_requirement(requirement):
+    if isinstance(requirement, Package):
+        requirement = Requirement(str(requirement))
+
+    elif isinstance(requirement, str):
+        requirement = Requirement(requirement)
+
+    return requirement
+
+
 class PipFreeze(object):
     def __init__(self, pip_freeze_output):
         self._load_pip_freeze(pip_freeze_output)
@@ -30,14 +40,20 @@ class PipFreeze(object):
             self._packages[package.id] = package
 
     def __contains__(self, requirement):
-        if isinstance(requirement, Package):
-            requirement = Requirement(str(requirement))
-
-        elif isinstance(requirement, str):
-            requirement = Requirement(requirement)
-
+        requirement = _to_requirement(requirement)
         package = self._packages.get(requirement.id)
         return package in requirement
+
+    def __getitem__(self, package_name):
+        requirement = _to_requirement(package_name)
+        package = self._packages[requirement.id]
+        return package
+
+    def get(self, requirement, default=None):
+        try:
+            return self[requirement]
+        except KeyError:
+            return default
 
     def __iter__(self):
         for package in self._packages.values():

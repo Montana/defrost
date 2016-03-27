@@ -43,6 +43,7 @@ def test_pip_freeze__len(freeze, expected):
 
 @pytest.mark.parametrize("freeze, package, expected", [
     ('foo==1.2', 'foo', True),
+    ('foo==1.2', 'FOO', True),
     ('foo==1.2', 'foo==1.2', True),
     ('foo==1.2', 'foo>=1.0', True),
     ('foo==1.2', 'foo<2.0', True),
@@ -66,6 +67,49 @@ def test_pip_freeze__contains(freeze, package, expected):
     from defrost import PipFreeze
     pip_freeze = PipFreeze(freeze)
     assert (package in pip_freeze) is expected
+
+
+@pytest.mark.parametrize("freeze, package, expected", [
+    ('foo==1.2', 'foo', Package('foo==1.2')),
+    ('foo==1.2', 'FOO', Package('foo==1.2')),
+    ('foo==1.2\nbar==1.0', 'bar', Package('bar==1.0')),
+])
+def test_pip_freeze__getitems_found(freeze, package, expected):
+    from defrost import PipFreeze
+    pip_freeze = PipFreeze(freeze)
+    assert pip_freeze[package] == expected
+
+
+@pytest.mark.parametrize("freeze, package", [
+    ('foo==1.2', 'bar'),
+])
+def test_pip_freeze__getitems_KeyError(freeze, package):
+    from defrost import PipFreeze
+    pip_freeze = PipFreeze(freeze)
+    pytest.raises(KeyError, pip_freeze.__getitem__, package)
+
+
+@pytest.mark.parametrize("freeze, package, expected", [
+    ('foo==1.2', 'bar', None),
+    ('foo==1.2', 'foo', Package('foo==1.2')),
+    ('foo==1.2', 'FOO', Package('foo==1.2')),
+])
+def test_pip_freeze__get_without_default(freeze, package, expected):
+    from defrost import PipFreeze
+    pip_freeze = PipFreeze(freeze)
+    assert pip_freeze.get(package) == expected
+
+
+@pytest.mark.parametrize("freeze, package, default, expected", [
+    ('foo==1.2', 'bar', None, None),
+    ('foo==1.2', 'bar', 'some-default', 'some-default'),
+    ('foo==1.2', 'foo', 'some-default', Package('foo==1.2')),
+    ('foo==1.2', 'FOO', 'some-default', Package('foo==1.2')),
+])
+def test_pip_freeze__get_with_default(freeze, package, default, expected):
+    from defrost import PipFreeze
+    pip_freeze = PipFreeze(freeze)
+    assert pip_freeze.get(package, default) == expected
 
 
 @pytest.mark.parametrize("freeze, reqs, expected_deprecated", [

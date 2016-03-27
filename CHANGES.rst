@@ -1,3 +1,8 @@
+Unreleased
+==========
+
+* implement ``PipFreeze.__getitem__`` and ``PipFreeze.get()``.
+
 0.3.2
 =====
 
