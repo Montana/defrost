@@ -12,7 +12,7 @@ def test_requirement(req, req_name, req_specs, req_id, req_repr, req_str):
     req = Requirement(req)
     assert req.id == req_id
     assert req.name == req_name
-    assert req.specifiers == req_specs
+    assert sorted(req.specifiers) == sorted(req_specs)
     assert repr(req) == req_repr
     assert str(req) == req_str
 
